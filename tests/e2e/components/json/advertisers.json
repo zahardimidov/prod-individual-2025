@@ -1,0 +1,42 @@
+[
+    {
+        "advertiser_id": "advertiser-id-1",
+        "name": "Advertiser1"
+    },
+    {
+        "advertiser_id": "advertiser-id-2",
+        "name": "Advertiser2"
+    },
+    {
+        "advertiser_id": "advertiser-id-3",
+        "name": "Advertiser3"
+    },
+    {
+        "advertiser_id": "advertiser-id-4",
+        "name": "Advertiser4"
+    },
+    {
+        "advertiser_id": "advertiser-id-5",
+        "name": "Advertiser5"
+    },
+    {
+        "advertiser_id": "advertiser-id-6",
+        "name": "Advertiser6"
+    },
+    {
+        "advertiser_id": "advertiser-id-7",
+        "name": "Advertiser7"
+    },
+    {
+        "advertiser_id": "advertiser-id-8",
+        "name": "Advertiser8"
+    },
+    {
+        "advertiser_id": "advertiser-id-9",
+        "name": "Advertiser9"
+    },
+    {
+        "advertiser_id": "advertiser-id-10",
+        "name": "Advertiser10"
+    }
+]

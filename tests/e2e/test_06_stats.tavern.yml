@@ -1,0 +1,186 @@
+test_name: Тестирование статистики
+
+stages:
+  - name: Получение всех кампаний рекламодателя 1
+    request:
+      url: "{BASE_URL}/advertisers/advertiser-id-1/campaigns"
+      method: GET
+    response:
+      status_code: 200
+      save:
+        json:
+          advertiser-1-campaigns: "@"
+
+  - name: Получение всех кампаний рекламодателя 2
+    request:
+      url: "{BASE_URL}/advertisers/advertiser-id-2/campaigns"
+      method: GET
+    response:
+      status_code: 200
+      save:
+        json:
+          advertiser-2-campaigns: "@"
+
+  - name: "Получение статистики рекламодателя"
+    request:
+      url: "{BASE_URL}/stats/advertisers/advertiser-id-1/campaigns"
+      method: GET
+    response:
+      status_code: 200
+
+      json:
+        impressions_count: 0
+        clicks_count: 0
+
+  - name: "Получение статистики рекламодателя без кампаний"
+    request:
+      url: "{BASE_URL}/stats/advertisers/advertiser-id-9/campaigns"
+      method: GET
+    response:
+      status_code: 200
+
+      json:
+        impressions_count: 0
+        clicks_count: 0
+
+  - name: "Получение статистики по первой кампании рекламодателя"
+    request:
+      url: "{BASE_URL}/stats/campaigns/{advertiser-1-campaigns[0].campaign_id}"
+      method: GET
+    response:
+      status_code: 200
+
+      json:
+        impressions_count: 0
+        clicks_count: 0
+
+  - name: "Установили день 10"
+    request:
+      url: "{BASE_URL}/time/advance"
+      method: POST
+      json:
+        current_date: 10
+    response:
+      status_code: 200
+
+  - name: "Просмотрели и кликнули рекламу"
+    request:
+      url: "{BASE_URL}/ads/{advertiser-1-campaigns[0].campaign_id}/click?client_id=client-id-2"
+      method: POST
+    response:
+      status_code: 204
+
+  - name: "Просмотрели и кликнули рекламу повторно"
+    request:
+      url: "{BASE_URL}/ads/{advertiser-1-campaigns[0].campaign_id}/click?client_id=client-id-2"
+      method: POST
+    response:
+      status_code: 204
+
+  - name: "Просмотрели и кликнули другую рекламу другого рекламодателя"
+    request:
+      url: "{BASE_URL}/ads/{advertiser-2-campaigns[0].campaign_id}/click?client_id=client-id-8"
+      method: POST
+    response:
+      status_code: 204
+
+  - name: "Получение статистики по первой кампании рекламодателя"
+    request:
+      url: "{BASE_URL}/stats/campaigns/{advertiser-1-campaigns[0].campaign_id}"
+      method: GET
+    response:
+      status_code: 200
+
+      json:
+        impressions_count: 1
+        clicks_count: 1
+
+  - name: "Получение статистики по второй кампании рекламодателя"
+    request:
+      url: "{BASE_URL}/stats/campaigns/{advertiser-1-campaigns[1].campaign_id}"
+      method: GET
+    response:
+      status_code: 200
+
+      json:
+        impressions_count: 0
+        clicks_count: 0
+
+  - name: "Установили день 12"
+    request:
+      url: "{BASE_URL}/time/advance"
+      method: POST
+      json:
+        current_date: 12
+    response:
+      status_code: 200
+
+  - name: "Просмотрел и кликнул"
+    request:
+      url: "{BASE_URL}/ads/{advertiser-1-campaigns[0].campaign_id}/click?client_id=client-id-1"
+      method: POST
+    response:
+      status_code: 204
+
+  - name: "Получение статистики по первой кампании рекламодателя"
+    request:
+      url: "{BASE_URL}/stats/campaigns/{advertiser-1-campaigns[0].campaign_id}"
+      method: GET
+    response:
+      status_code: 200
+
+      json:
+        impressions_count: 2
+
+  - name: "Получение статистики по первой кампании рекламодателя по дням"
+    request:
+      url: "{BASE_URL}/stats/campaigns/{advertiser-1-campaigns[0].campaign_id}/daily"
+      method: GET
+    response:
+      status_code: 200
+
+  - name: "Просмотрели и кликнули другую рекламу"
+    request:
+      url: "{BASE_URL}/ads/{advertiser-1-campaigns[1].campaign_id}/click?client_id=client-id-5"
+      method: POST
+    response:
+      status_code: 204
+
+  - name: "Получение статистики рекламодателя"
+    request:
+      url: "{BASE_URL}/stats/advertisers/advertiser-id-1/campaigns"
+      method: GET
+    response:
+      status_code: 200
+      json:
+        impressions_count: 3
+        clicks_count: 3
+
+  - name: "Получение статистики рекламодателя по дням"
+    request:
+      url: "{BASE_URL}/stats/advertisers/advertiser-id-1/campaigns/daily"
+      method: GET
+    response:
+      status_code: 200
+      json:
+        - impressions_count: 2
+
+  - name: "Получение статистики рекламодателя 2"
+    request:
+      url: "{BASE_URL}/stats/advertisers/advertiser-id-2/campaigns"
+      method: GET
+    response:
+      status_code: 200
+      json:
+        impressions_count: 1
+
+  - name: "Получение статистики рекламодателя 2 по дням"
+    request:
+      url: "{BASE_URL}/stats/advertisers/advertiser-id-2/campaigns/daily"
+      method: GET
+    response:
+      status_code: 200
+      json:
+        - impressions_count: 0
+        - impressions_count: 0
+        - impressions_count: 1

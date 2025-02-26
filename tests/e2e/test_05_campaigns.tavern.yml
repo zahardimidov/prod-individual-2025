@@ -1,0 +1,75 @@
+test_name: Тестирование управления кампаний
+
+stages:
+  - name: "Создание рекламы: invalid ages"
+    request:
+      url: "{BASE_URL}/advertisers/advertiser-id-1/campaigns"
+      method: POST
+      json: !include components/json/campaigns/invalid_ages.json
+    response:
+      status_code: 400
+
+  - name: "Создание рекламы: invalid gender"
+    request:
+      url: "{BASE_URL}/advertisers/advertiser-id-1/campaigns"
+      method: POST
+      json: !include components/json/campaigns/invalid_gender.json
+    response:
+      status_code: 400
+
+  - name: "Создание рекламы: не найден рекламодатель"
+    request:
+      url: "{BASE_URL}/advertisers/advertiser-id-100/campaigns"
+      method: POST
+      json: !include components/json/campaigns/no-target.json
+    response:
+      status_code: 404
+
+  - name: "Создание рекламы: нет таргетинга"
+    request:
+      url: "{BASE_URL}/advertisers/advertiser-id-1/campaigns"
+      method: POST
+      json: !include components/json/campaigns/no-target.json
+    response:
+      status_code: 201
+      save:
+        json:
+          saved_campaign_id: campaign_id
+
+  - name: "Получение реклам: не найден рекламодатель"
+    request:
+      url: "{BASE_URL}/advertisers/advertiser-id-100/campaigns"
+      method: GET
+    response:
+      status_code: 404
+
+  - name: "Получение реклам"
+    request:
+      url: "{BASE_URL}/advertisers/advertiser-id-1/campaigns"
+      method: GET
+    response:
+      status_code: 200
+
+  - name: "Получение рекламы"
+    request:
+      url: "{BASE_URL}/advertisers/advertiser-id-1/campaigns/{saved_campaign_id}"
+      method: GET
+    response:
+      status_code: 200
+      json:
+        targeting: {}
+        campaign_id: "{saved_campaign_id}"
+
+  - name: "Получение рекламы: другой рекламодатель"
+    request:
+      url: "{BASE_URL}/advertisers/advertiser-id-3/campaigns/{saved_campaign_id}"
+      method: GET
+    response:
+      status_code: 404
+
+  - name: "Получение рекламы: рекламодатель не существует"
+    request:
+      url: "{BASE_URL}/advertisers/{saved_campaign_id}/campaigns/{saved_campaign_id}"
+      method: GET
+    response:
+      status_code: 404

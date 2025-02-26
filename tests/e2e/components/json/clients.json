@@ -1,0 +1,72 @@
+[
+    {
+        "client_id": "client-id-1",
+        "login": "Client1",
+        "age": 50,
+        "location": "Moscow",
+        "gender": "MALE"
+    },
+    {
+        "client_id": "client-id-2",
+        "login": "Client2",
+        "age": 18,
+        "location": "Moscow",
+        "gender": "FEMALE"
+    },
+    {
+        "client_id": "client-id-3",
+        "login": "Client3",
+        "age": 70,
+        "location": "Moscow",
+        "gender": "MALE"
+    },
+    {
+        "client_id": "client-id-4",
+        "login": "Client4",
+        "age": 40,
+        "location": "Moscow",
+        "gender": "MALE"
+    },
+    {
+        "client_id": "client-id-5",
+        "login": "Client5",
+        "age": 25,
+        "location": "Kazan",
+        "gender": "FEMALE"
+    },
+    {
+        "client_id": "client-id-6",
+        "login": "Client6",
+        "age": 32,
+        "location": "Kazan",
+        "gender": "MALE"
+    },
+    {
+        "client_id": "client-id-7",
+        "login": "Client7",
+        "age": 45,
+        "location": "Perm",
+        "gender": "FEMALE"
+    },
+    {
+        "client_id": "client-id-8",
+        "login": "Client8",
+        "age": 29,
+        "location": "Kazan",
+        "gender": "MALE"
+    },
+    {
+        "client_id": "client-id-9",
+        "login": "Client9",
+        "age": 60,
+        "location": "Perm",
+        "gender": "FEMALE"
+    },
+    {
+        "client_id": "client-id-10",
+        "login": "Client10",
+        "age": 35,
+        "location": "Perm",
+        "gender": "MALE"
+    }
+]

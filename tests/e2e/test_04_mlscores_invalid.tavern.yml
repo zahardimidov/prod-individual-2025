@@ -1,0 +1,78 @@
+test_name: Тестирование ml-score
+
+stages:
+  - name: "Добавление Ml-score: Отрицательное значение"
+    request:
+      url: "{BASE_URL}/ml-scores"
+      method: POST
+      json:
+        client_id: client-id-1
+        advertiser_id: advertiser-id-1
+        score: -1
+    response:
+      status_code: 400
+
+  - name: "Добавление Ml-score: Не целое значение"
+    request:
+      url: "{BASE_URL}/ml-scores"
+      method: POST
+      json:
+        client_id: client-id-1
+        advertiser_id: advertiser-id-1
+        score: 27.5
+    response:
+      status_code: 400
+
+  - name: "Добавление Ml-score: Клиент не найден"
+    request:
+      url: "{BASE_URL}/ml-scores"
+      method: POST
+      json:
+        client_id: advertiser-id-1
+        advertiser_id: advertiser-id-1
+        score: 27
+    response:
+      status_code: 404
+
+  - name: "Добавление Ml-score: рекламодатель не найден"
+    request:
+      url: "{BASE_URL}/ml-scores"
+      method: POST
+      json:
+        client_id: client-id-1
+        advertiser_id: client-id-1
+        score: 27
+    response:
+      status_code: 404
+
+  - name: "Добавление Ml-score: никто не найден"
+    request:
+      url: "{BASE_URL}/ml-scores"
+      method: POST
+      json:
+        client_id: advertiser-id-1
+        advertiser_id: client-id-1
+        score: 27
+    response:
+      status_code: 404
+
+  - name: "Добавление Ml-score: score не передан"
+    request:
+      url: "{BASE_URL}/ml-scores"
+      method: POST
+      json:
+        client_id: advertiser-id-1
+        advertiser_id: client-id-1
+    response:
+      status_code: 400
+
+  - name: "Обновление Ml-score"
+    request:
+      url: "{BASE_URL}/ml-scores"
+      method: POST
+      json:
+        client_id: client-id-1
+        advertiser_id: advertiser-id-1
+        score: 100
+    response:
+      status_code: 200

@@ -1,0 +1,60 @@
+test_name: Тестирование рекламодателей
+
+stages:
+  - name: "Создание рекламодателей"
+    request:
+      url: "{BASE_URL}/advertisers/bulk"
+      method: POST
+      json: !include components/json/advertisers.json
+    response:
+      status_code: 201
+
+  - name: "Создание рекламодателя: пустое поле"
+    request:
+      url: "{BASE_URL}/advertisers/bulk"
+      method: POST
+      json:
+        - advertiser_id: newID
+          name: null
+    response:
+      status_code: 400
+
+  - name: "Создание одного и обновление другого рекламодателя"
+    request:
+      url: "{BASE_URL}/advertisers/bulk"
+      method: POST
+      json:
+        - advertiser_id: advertiser-id-1
+          name: Advertiser-1
+
+        - advertiser_id: advertiser-id-new
+          name: New Advertiser
+    response:
+      json:
+        - advertiser_id: advertiser-id-1
+          name: Advertiser-1
+
+        - advertiser_id: advertiser-id-new
+          name: New Advertiser
+      status_code: 201
+
+  - name: "Получение рекламодателя: нет ID"
+    request:
+      url: "{BASE_URL}/advertisers/"
+      method: GET
+    response:
+      status_code: 404
+
+  - name: "Получение рекламодателя: Не существует"
+    request:
+      url: "{BASE_URL}/advertisers/client-id-1"
+      method: GET
+    response:
+      status_code: 404
+
+  - name: "Получение рекламодателя"
+    request:
+      url: "{BASE_URL}/advertisers/advertiser-id-2"
+      method: GET
+    response:
+      status_code: 200

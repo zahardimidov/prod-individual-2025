@@ -1,0 +1,10 @@
+{
+    "impressions_limit": 5,
+    "clicks_limit": 3,
+    "cost_per_impression": 1,
+    "cost_per_click": 8,
+    "ad_title": "Title",
+    "ad_text": "Hello everyone",
+    "start_date": 10,
+    "end_date": 21
+  }

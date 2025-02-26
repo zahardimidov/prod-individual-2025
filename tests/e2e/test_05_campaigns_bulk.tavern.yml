@@ -1,0 +1,32 @@
+test_name: Тестирование добавления кампаний
+
+marks:
+  - parametrize:
+      key:
+        - advertiser_ind
+        - index
+      vals:
+        - [1, 1]
+        - [2, 2]
+        - [3, 3]
+        - [4, 4]
+        - [5, 5]
+
+        - [2, 6]
+        - [3, 7]
+        - [4, 8]
+        - [5, 9]
+        - [6, 0]
+
+stages:
+  - name: "Создание рекламы"
+    request:
+      url: "{BASE_URL}/advertisers/advertiser-id-{advertiser_ind}/campaigns"
+      method: POST
+      json:
+        $ext:
+          function: utils:return_campaign
+          extra_kwargs:
+            index: "{index}"
+    response:
+      status_code: 201

@@ -1,0 +1,20 @@
+test_name: Добавление Ml-score"
+
+marks:
+  - parametrize:
+      key:
+        - client_id
+        - advertiser_id
+        - score
+      vals: !include components/json/mlscores.json
+stages:
+  - name: "Добавление Ml-score"
+    request:
+      url: "{BASE_URL}/ml-scores"
+      method: POST
+      json:
+        client_id: "{client_id}"
+        advertiser_id: "{advertiser_id}"
+        score: "{score}"
+    response:
+      status_code: 200

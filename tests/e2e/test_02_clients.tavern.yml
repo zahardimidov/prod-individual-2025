@@ -1,0 +1,104 @@
+test_name: Тестирование клиентов
+
+stages:
+  - name: "Создание пользователей"
+    request:
+      url: "{BASE_URL}/clients/bulk"
+      method: POST
+      json: !include components/json/clients.json
+    response:
+      status_code: 201
+
+  - name: "Создание пользователей: лишнее поле"
+    request:
+      url: "{BASE_URL}/clients/bulk"
+      method: POST
+      json:
+        - client_id: client-id-11
+          login: test-login
+          age: 23
+          gender: MALE
+          extra: cool
+    response:
+      status_code: 400
+
+  - name: "Создание пользователей: пустой логин"
+    request:
+      url: "{BASE_URL}/clients/bulk"
+      method: POST
+      json:
+        - client_id: client-id-11
+          login: null
+          age: 23
+          gender: MALE
+    response:
+      status_code: 400
+
+  - name: "Обновление пользователя"
+    request:
+      url: "{BASE_URL}/clients/bulk"
+      method: POST
+      json:
+        - client_id: client-id-1
+          login: CLient1
+          age: 48
+          location: Perm
+          gender: MALE
+    response:
+      json:
+        - client_id: client-id-1
+          login: CLient1
+          age: 48
+          location: Perm
+          gender: MALE
+
+      status_code: 201
+
+  - name: "Обновление пользователя: invalid gender"
+    request:
+      url: "{BASE_URL}/clients/bulk"
+      method: POST
+      json:
+        - client_id: client-id-3
+          login: CLient3
+          age: 48
+          location: Perm
+          gender: Perm
+    response:
+      status_code: 400
+
+  - name: "Обновление пользователя: dublicate login"
+    request:
+      url: "{BASE_URL}/clients/bulk"
+      method: POST
+      json:
+        - client_id: client-id-11
+          login: Client3
+          age: 48
+          location: Perm
+          gender: FEMALE
+    response:
+      status_code: 201
+
+  - name: "Получение пользователя"
+    request:
+      url: "{BASE_URL}/clients/client-id-5"
+      method: GET
+    response:
+      status_code: 200
+      json:
+        client_id: client-id-5
+
+  - name: "Получение пользователя: без id"
+    request:
+      url: "{BASE_URL}/clients/"
+      method: GET
+    response:
+      status_code: 404
+
+  - name: "Получение пользователя: не существует"
+    request:
+      url: "{BASE_URL}/clients/undefined"
+      method: GET
+    response:
+      status_code: 404

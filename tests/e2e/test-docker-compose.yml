@@ -1,0 +1,48 @@
+version: "3.9"
+
+networks:
+  test:
+
+services:
+  test-postgres:
+    restart: unless-stopped
+
+    image: "postgres:16.6-alpine"
+    container_name: test-postgres
+    ports:
+      - 5433:5433
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      PGPORT: 5433
+    networks:
+      - test
+
+  redis:
+    restart: unless-stopped
+
+    image: "redis:7.4"
+    ports:
+    - "6379:6379"
+    networks:
+    - test
+
+  test-app:
+    restart: unless-stopped
+    build:
+      context: ../../app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ENGINE=postgresql+asyncpg://test:test@test-postgres:5433/test
+      - TEST_MODE=1
+      - BOT_TOKEN=7966059484:AAHY7osUAcUq4jg2glQGzpprPzewucjlo60
+    ports:
+      - "8080:8080"
+    depends_on:
+      - test-postgres
+    networks:
+      - test
+    

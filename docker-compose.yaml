@@ -1,0 +1,138 @@
+networks:
+  dev:
+
+services:
+  tunnel:
+    image: yuccastream/tuna
+    command: http app:8080 --subdomain=${DOMAIN:-zahardimidov}
+    environment:
+      - TUNA_TOKEN=${TOKEN}
+    depends_on:
+      - app
+    networks:
+      - dev
+
+  db-prod:
+    restart: unless-stopped
+
+    image: "postgres:16.6-alpine"
+    container_name: db-prod
+    ports:
+      - 5432:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: prod
+      POSTGRES_USER: prood
+      POSTGRES_PASSWORD: proood
+      PGPORT: 5432
+    networks:
+      - dev
+
+  redis:
+    restart: unless-stopped
+    image: "redis:7.4"
+    ports:
+    - "6379:6379"
+    networks:
+    - dev
+
+  app:
+    restart: unless-stopped
+    build:
+      context: ./app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MINIO_ROOT_USER=minio
+      - MINIO_ROOT_PASSWORD=minio123
+      - MINIO_URL=http://minio:9000
+      - BOT_TOKEN=${BOT_TOKEN}
+      - IMAGES_URL=https://${DOMAIN:-zahardimidov}.ru.tuna.am/images/
+      - WEBHOOK_URL=https://${DOMAIN:-zahardimidov}.ru.tuna.am/webhook
+      - YANDEX_CLOUD_API_TOKEN=${YANDEX_CLOUD_API_TOKEN}
+      - YANDEX_CLOUD_ID=${YANDEX_CLOUD_ID}
+      - MODERATION_API_URL=http://moderation:4000/validate
+      - ENGINE=postgresql+asyncpg://prood:proood@db-prod:5432/prod
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db-prod
+      - redis
+      - minio
+    networks:
+      - dev
+
+  minio:
+    image: minio/minio
+    restart: always
+    volumes:
+      - ./storage:/storage
+    environment:
+      - MINIO_ROOT_USER=minio
+      - MINIO_ROOT_PASSWORD=minio123
+    command: server /storage --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+    - dev
+
+  moderation:
+    restart: unless-stopped
+    build:
+      context: ./moderation
+    ports:
+      - "4000:4000"
+    networks:
+      - dev
+  
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+      - ./grafana/conf.ini:/etc/grafana/grafana.ini
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_PATHS_CONFIG=/etc/grafana/grafana.ini
+    networks:
+    - dev
+    command: /etc/grafana/provisioning/dashboards/post.sh
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - 9090:9090
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    volumes:
+      - ./grafana/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./grafana/prometheus:/prometheus
+    networks:
+      - dev
+      
+  nodeexporter:
+    container_name: nodeexporter
+    image: prom/node-exporter
+    restart: unless-stopped
+    pid: host
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - dev
+volumes:
+  db-data:

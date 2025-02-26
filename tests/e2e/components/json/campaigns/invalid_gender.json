@@ -1,0 +1,16 @@
+{
+    "impressions_limit": 0,
+    "clicks_limit": 0,
+    "cost_per_impression": 0,
+    "cost_per_click": 0,
+    "ad_title": "Title",
+    "ad_text": "Hello everyone",
+    "start_date": 3,
+    "end_date": 18,
+    "targeting": {
+      "gender": "MALES",
+      "age_from": 54,
+      "age_to": 52,
+      "location": "Perm"
+    }
+  }

@@ -1,0 +1,22 @@
+test_name: Тестирование статистики
+
+marks:
+  - parametrize:
+      key: i
+      vals:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+stages:
+  - name: Получение рекламы
+    request:
+      url: "{BASE_URL}/ads?client_id=client-id-5"
+      method: GET
+    response:
+      status_code: 200
