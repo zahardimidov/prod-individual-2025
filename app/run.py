@@ -70,6 +70,12 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 async def http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(status_code=exc.status_code, content=jsonable_encoder({"status": 'error', "message": exc.detail}))
 
+
+@app.exception_handler(Exception)
+async def any_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(status_code=404, content=jsonable_encoder({"status": 'error', "message": 'Контент не найден'}))
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8080, forwarded_allow_ips='*')
